@@ -13,11 +13,16 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 button{border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font-size:14px;transition:.2s}.btn-primary{background:var(--primary);color:var(--bg)}.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}.btn-danger{background:var(--red-bg);color:var(--red)}.btn-edit{background:var(--blue-bg);color:var(--blue)}
 .dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px}.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow)}.stat .number{font-size:30px;font-weight:bold;margin-bottom:5px}.stat .label{color:var(--muted);font-size:14px}
 .main-grid{display:grid;grid-template-columns:350px 1fr;gap:20px;align-items:start}.card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:20px;box-shadow:var(--shadow)}.card h2{margin-top:0;font-size:19px}
+.lesson-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:var(--muted);margin-bottom:4px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.calendar-day{position:relative;border-radius:8px;padding:8px 0;text-align:center;font-size:13px;cursor:pointer;border:1px solid transparent;background:var(--bg)}.calendar-day:hover{border-color:var(--border)}.calendar-day.other-month{opacity:.35}.calendar-day.today{border-color:var(--primary)}.calendar-day.selected{background:var(--primary);color:var(--bg)}
+.calendar-day .dot{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--blue)}.calendar-day.has-pending .dot{background:var(--orange)}.calendar-day.selected .dot{background:var(--bg)}
+.calendar-day-details{margin-top:14px;border-top:1px solid var(--border);padding-top:12px}.calendar-day-details h4{margin:0 0 8px;font-size:14px;text-transform:capitalize}.day-slot{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px;gap:8px}.day-slot .slot-time{font-weight:bold;white-space:nowrap}
 .form-group{margin-bottom:15px}label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}input,select{width:100%;padding:11px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);outline:none}.form-buttons{display:flex;gap:8px;margin-top:10px}.form-buttons button{flex:1}
 .lesson-list{display:flex;flex-direction:column;gap:12px}.lesson{border:1px solid var(--border);border-radius:12px;padding:16px;background:var(--card)}.lesson-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.student-name{font-size:18px;font-weight:bold}.date{color:var(--muted);font-size:14px;margin-top:4px}.badges{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.badge{padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold}.badge-plan,.badge-done{background:var(--green-bg);color:var(--green)}.badge-pending{background:var(--orange-bg);color:var(--orange)}.badge-online{background:var(--blue-bg);color:var(--blue)}.lesson-actions{display:flex;gap:7px;flex-wrap:wrap}.lesson-actions button{font-size:12px;padding:8px 11px}
 .empty,.loading{text-align:center;color:var(--muted);padding:35px 15px}.hidden{display:none!important}.error,.success{padding:10px;border-radius:8px;font-size:13px;margin-bottom:15px;display:none}.error{color:var(--red);background:var(--red-bg)}.success{color:var(--green);background:var(--green-bg)}
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;box-shadow:var(--shadow)}.login-card h1{margin-top:0}.export-box{margin-top:20px}textarea{width:100%;min-height:230px;resize:vertical;padding:12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:Arial,sans-serif}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}.section-title h2{margin:0}
-@media(max-width:850px){.dashboard{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}}@media(max-width:550px){.container{padding:15px}header{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.top-actions button{flex:1}.dashboard{gap:10px}.stat{padding:15px}.stat .number{font-size:25px}.lesson-top{flex-direction:column}}
+@media(max-width:900px){.dashboard{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}}@media(max-width:550px){.container{padding:15px}header{align-items:flex-start;flex-direction:column}.top-actions{width:100%}.top-actions button{flex:1}.dashboard{gap:10px}.stat{padding:15px}.stat .number{font-size:25px}.lesson-top{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -67,14 +72,40 @@ button{border:0;border-radius:9px;padding:10px 15px;cursor:pointer;font-size:14p
 </div>
 
 <div class="card">
-  <div class="section-title"><h2>Próximas aulas</h2><button class="btn-secondary" onclick="loadLessons()">↻ Atualizar</button></div>
-  <div id="lessonList"><div class="loading">Carregando aulas...</div></div>
+  <div class="section-title">
+    <h2>Calendário</h2>
+    <div style="display:flex;gap:6px;align-items:center">
+      <button class="btn-secondary" onclick="changeCalendarMonth(-1)">‹</button>
+      <span id="calendarMonthLabel" style="font-weight:bold;min-width:110px;text-align:center;display:inline-block"></span>
+      <button class="btn-secondary" onclick="changeCalendarMonth(1)">›</button>
+    </div>
+  </div>
+  <div class="calendar-weekdays"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
+  <div id="calendarGrid" class="calendar-grid"></div>
+  <div id="calendarDayDetails" class="calendar-day-details"></div>
 </div>
+</div>
+
+<div class="card" style="margin-top:20px">
+  <div class="section-title">
+    <h2>Próximas aulas</h2>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <select id="studentFilter" style="width:auto;min-width:160px" onchange="onStudentFilterChange()"><option value="">Todos os alunos</option></select>
+      <button class="btn-secondary" onclick="loadLessons()">↻ Atualizar</button>
+    </div>
+  </div>
+  <div id="lessonList" class="lesson-list-grid"><div class="loading">Carregando aulas...</div></div>
 </div>
 
 <div id="exportArea" class="card export-box hidden">
   <div class="section-title"><h2>Aulas não realizadas</h2><button class="btn-secondary" onclick="copyExport()">Copiar</button></div>
   <textarea id="exportText" readonly></textarea>
+</div>
+
+<div class="card" style="margin-top:20px">
+  <div class="section-title"><h2>🗄 Aulas antigas</h2><button id="toggleOldBtn" class="btn-secondary" onclick="toggleOldLessons()">Mostrar</button></div>
+  <p style="color:var(--muted);font-size:13px;margin-top:-10px">Aulas não realizadas ou aulas realizadas que já passaram do prazo de exibição na lista principal. Revise e exclua aos poucos.</p>
+  <div id="oldLessonList" class="lesson-list hidden"></div>
 </div>
 </div>
 </div>
@@ -84,6 +115,8 @@ const SUPABASE_URL="https://lpwvfyldgrdjujfdibrl.supabase.co";
 const SUPABASE_KEY="sb_publishable_y50fW4CcX7uxl6NuA0deGg_w2ijg-Jr";
 const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 let lessons=[];
+let calendarDate=new Date();
+let selectedCalendarDay=null;
 
 /* Datas são tratadas como horário local do navegador.
    Isso evita o deslocamento de fuso que ocorria com new Date("YYYY-MM-DDTHH:mm:ss"). */
@@ -148,18 +181,38 @@ async function loadLessons(){
   const {data,error}=await supabaseClient.from("lessons").select("*").order("datetime",{ascending:true});
   if(error){list.innerHTML=`<div class="empty">Erro ao carregar aulas.<br>${escapeHTML(error.message)}</div>`;return}
   lessons=data||[];
+  populateStudentFilter();
   renderLessons();
   updateStats();
+  renderCalendar();
+  if(selectedCalendarDay) renderDayDetails(selectedCalendarDay);
+  if(!document.getElementById("oldLessonList").classList.contains("hidden")) renderOldLessons();
+}
+
+function populateStudentFilter(){
+  const sel=document.getElementById("studentFilter");
+  const current=sel.value;
+  const names=[...new Set(lessons.map(l=>l.student).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  sel.innerHTML='<option value="">Todos os alunos</option>'+names.map(n=>`<option value="${escapeHTML(n)}">${escapeHTML(n)}</option>`).join("");
+  if(names.includes(current)) sel.value=current;
+}
+function onStudentFilterChange(){
+  renderLessons();
+  renderCalendar();
+  if(selectedCalendarDay) renderDayDetails(selectedCalendarDay);
+  if(!document.getElementById("oldLessonList").classList.contains("hidden")) renderOldLessons();
 }
 function renderLessons(){
   const list=document.getElementById("lessonList");
   const now=Date.now(), fortyEight=48*60*60*1000;
-  const visible=lessons.filter(l=>{
+  const studentFilter=document.getElementById("studentFilter").value;
+  let visible=lessons.filter(l=>{
     const d=parseLocalDateTime(l.datetime);
     if(!d||isNaN(d)) return false;
     const diff=now-d.getTime();
     return d.getTime()>=now || diff<=fortyEight;
   });
+  if(studentFilter) visible=visible.filter(l=>l.student===studentFilter);
   if(!visible.length){list.innerHTML='<div class="empty">Nenhuma aula para mostrar.</div>';return}
   list.innerHTML="";
   visible.forEach(lesson=>{
@@ -180,6 +233,122 @@ function renderLessons(){
       </div>`;
     list.appendChild(div);
   });
+}
+
+function toggleOldLessons(){
+  const box=document.getElementById("oldLessonList");
+  const btn=document.getElementById("toggleOldBtn");
+  const willShow=box.classList.contains("hidden");
+  box.classList.toggle("hidden");
+  btn.textContent=willShow?"Ocultar":"Mostrar";
+  if(willShow) renderOldLessons();
+}
+function renderOldLessons(){
+  const list=document.getElementById("oldLessonList");
+  const now=Date.now(), fortyEight=48*60*60*1000;
+  const studentFilter=document.getElementById("studentFilter").value;
+  let old=lessons.filter(l=>{
+    const d=parseLocalDateTime(l.datetime);
+    if(!d||isNaN(d)) return false;
+    const diff=now-d.getTime();
+    const isVisibleInMain=d.getTime()>=now || diff<=fortyEight;
+    return !isVisibleInMain && (!l.class_done || d.getTime()<now);
+  });
+  if(studentFilter) old=old.filter(l=>l.student===studentFilter);
+  old.sort((a,b)=>parseLocalDateTime(b.datetime)-parseLocalDateTime(a.datetime));
+  if(!old.length){list.innerHTML='<div class="empty">Nenhuma aula antiga para revisar.</div>';return}
+  list.innerHTML="";
+  old.forEach(lesson=>{
+    const dt=formatLessonDateTime(lesson.datetime);
+    const cls=lesson.class_done?'<span class="badge badge-done">✓ Aula realizada</span>':'<span class="badge badge-pending">⏳ Aula não realizada</span>';
+    const fmt=`<span class="badge badge-online">${escapeHTML(lesson.format||"online")}</span>`;
+    const div=document.createElement("div");
+    div.className="lesson";
+    div.innerHTML=`
+      <div class="lesson-top"><div><div class="student-name">${escapeHTML(lesson.student)}</div><div class="date">${dt.date} às ${dt.time}</div></div></div>
+      <div class="badges">${fmt}${cls}</div>
+      <div class="lesson-actions">
+        <button class="btn-secondary" onclick="toggleClass(${lesson.id},${!lesson.class_done})">${lesson.class_done?"↩ Não realizada":"✓ Aula realizada"}</button>
+        <button class="btn-danger" onclick="deleteLesson(${lesson.id})">🗑️ Excluir</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function changeCalendarMonth(delta){
+  calendarDate=new Date(calendarDate.getFullYear(),calendarDate.getMonth()+delta,1);
+  selectedCalendarDay=null;
+  document.getElementById("calendarDayDetails").innerHTML="";
+  renderCalendar();
+}
+function dateKeyFromParts(y,m,d){return `${y}-${pad(m)}-${pad(d)}`}
+function renderCalendar(){
+  const year=calendarDate.getFullYear(), month=calendarDate.getMonth();
+  const label=calendarDate.toLocaleDateString("pt-BR",{month:"long",year:"numeric"});
+  document.getElementById("calendarMonthLabel").textContent=label.charAt(0).toUpperCase()+label.slice(1);
+
+  const studentFilter=document.getElementById("studentFilter").value;
+  const byDay={};
+  lessons.forEach(l=>{
+    if(studentFilter && l.student!==studentFilter) return;
+    const d=parseLocalDateTime(l.datetime);
+    if(!d||isNaN(d)) return;
+    const key=dateKeyFromParts(d.getFullYear(),d.getMonth()+1,d.getDate());
+    (byDay[key]=byDay[key]||[]).push(l);
+  });
+
+  const firstWeekday=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const prevMonthDays=new Date(year,month,0).getDate();
+  const today=new Date();
+  const todayKey=dateKeyFromParts(today.getFullYear(),today.getMonth()+1,today.getDate());
+
+  const cells=[];
+  for(let i=firstWeekday-1;i>=0;i--) cells.push({day:prevMonthDays-i,month:month-1,year:month===0?year-1:year,other:true});
+  for(let d=1;d<=daysInMonth;d++) cells.push({day:d,month,year,other:false});
+  while(cells.length%7!==0 || cells.length<42) cells.push({day:cells.length-(firstWeekday+daysInMonth)+1,month:month+1,year:month===11?year+1:year,other:true});
+
+  const grid=document.getElementById("calendarGrid");
+  grid.innerHTML="";
+  cells.forEach(c=>{
+    const realMonth=((c.month%12)+12)%12;
+    const key=dateKeyFromParts(c.year,realMonth+1,c.day);
+    const dayLessons=byDay[key]||[];
+    const hasPending=dayLessons.some(l=>!l.class_done);
+    const div=document.createElement("div");
+    div.className="calendar-day"+(c.other?" other-month":"")+(key===todayKey?" today":"")+(key===selectedCalendarDay?" selected":"")+(hasPending?" has-pending":"");
+    div.innerHTML=`${c.day}${dayLessons.length?'<div class="dot"></div>':""}`;
+    div.onclick=()=>selectCalendarDay(key);
+    grid.appendChild(div);
+  });
+}
+function selectCalendarDay(key){
+  selectedCalendarDay=key;
+  renderCalendar();
+  renderDayDetails(key);
+}
+function renderDayDetails(key){
+  const box=document.getElementById("calendarDayDetails");
+  const studentFilter=document.getElementById("studentFilter").value;
+  const [y,m,d]=key.split("-").map(Number);
+  const dateObj=new Date(y,m-1,d);
+  const label=dateObj.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"});
+  const dayLessons=lessons.filter(l=>{
+    if(studentFilter && l.student!==studentFilter) return false;
+    const dt=parseLocalDateTime(l.datetime);
+    if(!dt||isNaN(dt)) return false;
+    return dateKeyFromParts(dt.getFullYear(),dt.getMonth()+1,dt.getDate())===key;
+  }).sort((a,b)=>parseLocalDateTime(a.datetime)-parseLocalDateTime(b.datetime));
+
+  if(!dayLessons.length){
+    box.innerHTML=`<h4>${label}</h4><div class="empty" style="padding:15px 0">Dia livre — nenhum horário preenchido.</div>`;
+    return;
+  }
+  box.innerHTML=`<h4>${label}</h4>`+dayLessons.map(l=>{
+    const dt=formatLessonDateTime(l.datetime);
+    const status=l.class_done?'<span class="badge badge-done">✓ Realizada</span>':'<span class="badge badge-pending">⏳ Pendente</span>';
+    return `<div class="day-slot"><span class="slot-time">${dt.time}</span><span>${escapeHTML(l.student)}</span>${status}</div>`;
+  }).join("");
 }
 
 async function saveLesson(){
