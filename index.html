@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ATLAS | Painel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <style>
 /* ============ CSS do Dashboard (atlas_dashboard.zip) ============ */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -99,7 +100,6 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
 @media(max-width:950px){.sidebar{width:78px}.brand div:not(.brand-mark),.profile div:not(.avatar),.nav-item span,.nav-label,.logout span{display:none}.brand{justify-content:center}.profile{justify-content:center}.nav-item{justify-content:center}.main{margin-left:78px;width:calc(100% - 78px)}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.topbar{padding:0 18px}.content{padding:24px 18px}.new-btn{display:none}.welcome{display:block}.role-switch{margin-top:15px;width:max-content}.stats{grid-template-columns:1fr 1fr}.agenda-items{grid-template-columns:1fr}.content-row{grid-template-columns:40px 1fr 25px}}
 
-<<<<<<< HEAD
 /* ============ Menu mobile (deslizante) ============ */
 .menu-toggle{display:none;width:38px;height:38px;border:1px solid var(--line);border-radius:9px;align-items:center;justify-content:center;color:var(--text);flex-shrink:0}
 .menu-toggle svg{width:19px;height:19px}
@@ -126,8 +126,6 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
   .stat .number{font-size:21px}
 }
 
-=======
->>>>>>> 9401292d705e2739cfb63455b005c6e1cd6c9d0b
 /* ============ CSS reaproveitado da Agenda (lessons) ============ */
 .dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
@@ -186,15 +184,39 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
 .material-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:8px;background:var(--card)}
 .material-title{font-weight:bold;font-size:13px}
 .material-date{color:var(--muted);font-size:11px;margin-top:2px}
-.material-actions{display:flex;gap:6px;flex-wrap:wrap}
+.material-actions{display:flex;gap:6px;flex-wrap:wrap;position:relative}
+.mat-menu{position:relative}
+.mat-menu-popup{position:absolute;right:0;top:calc(100% + 4px);background:var(--card);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);min-width:130px;z-index:30;overflow:hidden}
+.mat-menu-popup.hidden{display:none}
+.mat-menu-popup button{display:block;width:100%;text-align:left;padding:10px 13px;font-size:13px;background:none;border:none;color:var(--text);cursor:pointer}
+.mat-menu-popup button:hover{background:var(--bg)}
+
+/* ============ Modal de visualização de documentos ============ */
+.preview-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.preview-modal.hidden{display:none}
+.preview-modal-inner{background:var(--card);border-radius:16px;width:100%;max-width:820px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--shadow)}
+.preview-modal-header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border)}
+.preview-modal-header h3{margin:0;font-size:15px}
+.preview-modal-header button{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;padding:4px 8px}
+.preview-body{flex:1;overflow:auto;padding:0}
+.preview-body iframe{width:100%;height:78vh;border:none;display:block}
+.preview-loading{padding:60px 20px;text-align:center;color:var(--muted)}
+.docx-preview{padding:28px 32px;font-family:Georgia,'Times New Roman',serif;color:var(--text);line-height:1.6;max-width:680px;margin:0 auto}
+.docx-preview h1,.docx-preview h2,.docx-preview h3{font-family:'Plus Jakarta Sans',sans-serif;color:var(--navy);margin:22px 0 10px}
+.docx-preview h1{font-size:22px}.docx-preview h2{font-size:19px}.docx-preview h3{font-size:16px}
+.docx-preview p{margin:0 0 14px}
+.docx-preview table{border-collapse:collapse;width:100%;margin:14px 0}
+.docx-preview td,.docx-preview th{border:1px solid var(--border);padding:6px 10px;font-size:14px}
+.docx-preview img{max-width:100%}
+.docx-preview ul,.docx-preview ol{margin:0 0 14px;padding-left:22px}
 
 /* ============ Login ============ */
-#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:30px;box-shadow:var(--shadow)}
-.login-card h1{margin-top:0}
+#loginScreen{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;box-shadow:var(--shadow)}
+.login-card h1{margin:0 0 5px}
 .login-mark{width:52px;height:52px;border-radius:12px;background:var(--navy);display:grid;place-items:center;margin-bottom:16px}
 .login-mark svg{width:60%;height:60%}
-.login-slogan{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--text);margin:-6px 0 18px}
+.login-slogan{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--text);margin:0 0 20px}
 .login-slogan .accent{color:var(--red)}
 
 /* ============ Navegação entre páginas dentro do painel ============ */
@@ -213,7 +235,7 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
     </div>
     <h1>ATLAS | Painel</h1>
     <p class="login-slogan">EXPLORE. <span class="accent">APRENDA.</span> TRANSFORME.</p>
-    <p style="color:var(--muted)">Entre para acessar seu painel, sua agenda e seus flash cards.</p>
+    <p style="color:var(--muted);margin:0 0 22px;line-height:1.5">Entre para acessar seu painel, sua agenda e seus flash cards.</p>
     <div id="loginError" class="error"></div>
     <div class="form-group"><label>E-mail</label><input id="loginEmail" type="email" placeholder="seu@email.com"></div>
     <div class="form-group"><label>Senha</label><input id="loginPassword" type="password" placeholder="Sua senha"></div>
@@ -260,7 +282,6 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
     </div>
   </aside>
 
-<<<<<<< HEAD
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
 
   <main class="main">
@@ -273,13 +294,6 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
           <span class="eyebrow">ÁREA DO PROFESSOR</span>
           <h1 id="pageTitle">Dashboard</h1>
         </div>
-=======
-  <main class="main">
-    <header class="topbar">
-      <div>
-        <span class="eyebrow">ÁREA DO PROFESSOR</span>
-        <h1 id="pageTitle">Dashboard</h1>
->>>>>>> 9401292d705e2739cfb63455b005c6e1cd6c9d0b
       </div>
       <div class="top-actions">
         <button class="icon-btn" id="darkModeToggle" aria-label="Modo noturno" onclick="toggleDarkMode()">🌙</button>
@@ -415,21 +429,12 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
             <h2 id="formTitle">Nova aula</h2>
             <div id="formMessage" class="success"></div>
             <input type="hidden" id="editingId">
-<<<<<<< HEAD
             <div class="form-group"><label>Nome do aluno</label><div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg><input id="student" type="text" placeholder="Ex.: Caio"></div></div>
             <div class="form-group"><label>Data</label><div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg><input id="lessonDate" type="date"></div></div>
             <div class="form-group"><label>Horário</label><div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><input id="lessonTime" type="time"></div></div>
             <div class="form-group"><label>Formato</label><div class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg><select id="format"><option value="online">Online</option><option value="presencial">Presencial</option></select></div></div>
             <div class="form-buttons">
               <button class="btn-primary" onclick="saveLesson()">💾 Salvar aula</button>
-=======
-            <div class="form-group"><label>Nome do aluno</label><input id="student" type="text" placeholder="Ex.: Caio"></div>
-            <div class="form-group"><label>Data</label><input id="lessonDate" type="date"></div>
-            <div class="form-group"><label>Horário</label><input id="lessonTime" type="time"></div>
-            <div class="form-group"><label>Formato</label><select id="format"><option value="online">Online</option><option value="presencial">Presencial</option></select></div>
-            <div class="form-buttons">
-              <button class="btn-primary" onclick="saveLesson()">Salvar aula</button>
->>>>>>> 9401292d705e2739cfb63455b005c6e1cd6c9d0b
               <button id="cancelEdit" class="btn-secondary hidden" onclick="cancelEdit()">Cancelar</button>
             </div>
           </div>
@@ -477,7 +482,7 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
       <div id="page-aulas" class="page-view">
         <div class="main-grid">
           <div class="card">
-            <h2>Novo material</h2>
+            <h2 id="matFormTitle">Novo material</h2>
             <div id="matFormMessage" class="success"></div>
             <div class="form-group">
               <label>Nome do aluno</label>
@@ -487,8 +492,11 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
             <div class="form-group"><label>Título da aula (opcional)</label><input id="matTitle" type="text" placeholder="Ex.: Lesson 04 — Daily Routine"></div>
             <div class="form-group"><label>Plano de aula (Word)</label><input id="matPlano" type="file" accept=".doc,.docx"></div>
             <div class="form-group"><label>Apostila do aluno (PDF)</label><input id="matApostila" type="file" accept=".pdf"></div>
-            <button class="btn-primary" style="width:100%" id="matSaveBtn" onclick="saveMaterial()">Salvar material</button>
-            <p style="font-size:12px;color:var(--muted);margin-top:10px">Envie pelo menos um dos dois arquivos. Os dois ficam salvos e disponíveis pra baixar depois.</p>
+            <div class="form-buttons">
+              <button class="btn-primary" id="matSaveBtn" onclick="saveMaterial()">Salvar material</button>
+              <button id="matCancelEdit" class="btn-secondary hidden" onclick="cancelMaterialEdit()">Cancelar</button>
+            </div>
+            <p id="matFormHint" style="font-size:12px;color:var(--muted);margin-top:10px">Envie pelo menos um dos dois arquivos. Os dois ficam salvos e disponíveis pra baixar depois.</p>
           </div>
 
           <div class="card">
@@ -501,6 +509,17 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
             </div>
             <div id="materialsContainer"><div class="loading">Carregando materiais...</div></div>
           </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODAL: visualizar documento ===================== -->
+      <div id="previewModal" class="preview-modal hidden" onclick="if(event.target===this)closePreview()">
+        <div class="preview-modal-inner">
+          <div class="preview-modal-header">
+            <h3 id="previewTitle">Documento</h3>
+            <button onclick="closePreview()">✕</button>
+          </div>
+          <div id="previewBody" class="preview-body"></div>
         </div>
       </div>
 
@@ -573,7 +592,6 @@ function goToPage(page){
   }
   document.getElementById(targetId).classList.add("active");
   window.scrollTo({top:0,behavior:"smooth"});
-<<<<<<< HEAD
   toggleSidebar(false);
 }
 
@@ -583,8 +601,6 @@ function toggleSidebar(force){
   const shouldOpen = typeof force==="boolean" ? force : !sidebar.classList.contains("open");
   sidebar.classList.toggle("open", shouldOpen);
   overlay.classList.toggle("show", shouldOpen);
-=======
->>>>>>> 9401292d705e2739cfb63455b005c6e1cd6c9d0b
 }
 
 document.querySelectorAll(".nav-item").forEach(btn=>{
@@ -1152,6 +1168,8 @@ async function loadMaterials(){
   renderMaterials();
 }
 
+let editingMaterialId=null;
+
 async function saveMaterial(){
   const student=document.getElementById("matStudent").value.trim();
   const title=document.getElementById("matTitle").value.trim();
@@ -1159,19 +1177,23 @@ async function saveMaterial(){
   const apostilaFile=document.getElementById("matApostila").files[0];
 
   if(!student){alert("Preencha o nome do aluno.");return}
-  if(!planoFile && !apostilaFile){alert("Envie ao menos um arquivo (plano ou apostila).");return}
+  if(!editingMaterialId && !planoFile && !apostilaFile){alert("Envie ao menos um arquivo (plano ou apostila).");return}
 
   const {data:{user}}=await supabaseClient.auth.getUser();
   if(!user){alert("Sessão expirada. Entre novamente.");return}
 
+  const existing=editingMaterialId ? materials.find(m=>m.id===editingMaterialId) : null;
   const saveBtn=document.getElementById("matSaveBtn");
-  saveBtn.disabled=true; saveBtn.textContent="Enviando...";
+  saveBtn.disabled=true; saveBtn.textContent=editingMaterialId?"Salvando...":"Enviando...";
 
   try{
     const folder=`${user.id}/${slugify(student)}`;
-    const record={student,title:title||null,user_id:user.id};
+    const record={student,title:title||null};
 
     if(planoFile){
+      if(existing && existing.plano_path){
+        await supabaseClient.storage.from(MATERIALS_BUCKET).remove([existing.plano_path]);
+      }
       const path=`${folder}/${Date.now()}-plano-${slugify(planoFile.name.replace(/\.[^.]+$/,""))}${planoFile.name.match(/\.[^.]+$/)?.[0]||""}`;
       const {error:upErr}=await supabaseClient.storage.from(MATERIALS_BUCKET).upload(path,planoFile);
       if(upErr) throw new Error("Falha ao enviar o plano de aula: "+upErr.message);
@@ -1179,6 +1201,9 @@ async function saveMaterial(){
       record.plano_path=path; record.plano_url=urlData.publicUrl; record.plano_name=planoFile.name;
     }
     if(apostilaFile){
+      if(existing && existing.apostila_path){
+        await supabaseClient.storage.from(MATERIALS_BUCKET).remove([existing.apostila_path]);
+      }
       const path=`${folder}/${Date.now()}-apostila-${slugify(apostilaFile.name.replace(/\.[^.]+$/,""))}${apostilaFile.name.match(/\.[^.]+$/)?.[0]||""}`;
       const {error:upErr}=await supabaseClient.storage.from(MATERIALS_BUCKET).upload(path,apostilaFile);
       if(upErr) throw new Error("Falha ao enviar a apostila: "+upErr.message);
@@ -1186,19 +1211,22 @@ async function saveMaterial(){
       record.apostila_path=path; record.apostila_url=urlData.publicUrl; record.apostila_name=apostilaFile.name;
     }
 
-    const {error:insertErr}=await supabaseClient.from("lesson_materials").insert(record);
-    if(insertErr) throw new Error("Falha ao salvar o registro: "+insertErr.message);
+    if(editingMaterialId){
+      const {error:updateErr}=await supabaseClient.from("lesson_materials").update(record).eq("id",editingMaterialId);
+      if(updateErr) throw new Error("Falha ao atualizar o registro: "+updateErr.message);
+    }else{
+      record.user_id=user.id;
+      const {error:insertErr}=await supabaseClient.from("lesson_materials").insert(record);
+      if(insertErr) throw new Error("Falha ao salvar o registro: "+insertErr.message);
+    }
 
-    document.getElementById("matStudent").value="";
-    document.getElementById("matTitle").value="";
-    document.getElementById("matPlano").value="";
-    document.getElementById("matApostila").value="";
-    showMaterialMessage("Material salvo!");
+    showMaterialMessage(editingMaterialId?"Material atualizado!":"Material salvo!");
+    resetMaterialForm();
     await loadMaterials();
   }catch(err){
     alert(err.message);
   }finally{
-    saveBtn.disabled=false; saveBtn.textContent="Salvar material";
+    saveBtn.disabled=false; saveBtn.textContent=editingMaterialId?"Salvar alterações":"Salvar material";
   }
 }
 function showMaterialMessage(text){
@@ -1206,6 +1234,45 @@ function showMaterialMessage(text){
   box.textContent=text;box.style.display="block";
   setTimeout(()=>box.style.display="none",2200);
 }
+
+function editMaterial(id){
+  const m=materials.find(x=>x.id===id); if(!m)return;
+  editingMaterialId=id;
+  document.getElementById("matStudent").value=m.student;
+  document.getElementById("matTitle").value=m.title||"";
+  document.getElementById("matPlano").value="";
+  document.getElementById("matApostila").value="";
+  document.getElementById("matFormTitle").textContent="Editar material";
+  document.getElementById("matSaveBtn").textContent="Salvar alterações";
+  document.getElementById("matCancelEdit").classList.remove("hidden");
+  document.getElementById("matFormHint").textContent="Deixe os campos de arquivo em branco pra manter o que já está salvo, ou escolha um novo arquivo pra substituir.";
+  closeAllMatMenus();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function cancelMaterialEdit(){ resetMaterialForm(); }
+function resetMaterialForm(){
+  editingMaterialId=null;
+  document.getElementById("matStudent").value="";
+  document.getElementById("matTitle").value="";
+  document.getElementById("matPlano").value="";
+  document.getElementById("matApostila").value="";
+  document.getElementById("matFormTitle").textContent="Novo material";
+  document.getElementById("matSaveBtn").textContent="Salvar material";
+  document.getElementById("matCancelEdit").classList.add("hidden");
+  document.getElementById("matFormHint").textContent="Envie pelo menos um dos dois arquivos. Os dois ficam salvos e disponíveis pra baixar depois.";
+}
+
+function closeAllMatMenus(){
+  document.querySelectorAll(".mat-menu-popup").forEach(el=>el.classList.add("hidden"));
+}
+function toggleMatMenu(event, id){
+  event.stopPropagation();
+  const menu=document.getElementById("matMenu-"+id);
+  const wasHidden=menu.classList.contains("hidden");
+  closeAllMatMenus();
+  if(wasHidden) menu.classList.remove("hidden");
+}
+document.addEventListener("click", closeAllMatMenus);
 
 function renderMaterials(){
   const container=document.getElementById("materialsContainer");
@@ -1223,8 +1290,8 @@ function renderMaterials(){
   container.innerHTML=students.map(student=>{
     const items=byStudent[student].map(m=>{
       const date=new Date(m.created_at).toLocaleDateString("pt-BR");
-      const planoLink=m.plano_url?`<a class="btn-secondary" href="${m.plano_url}" target="_blank" rel="noopener" style="text-decoration:none;font-size:12px;padding:7px 10px">📄 Plano (Word)</a>`:"";
-      const apostilaLink=m.apostila_url?`<a class="btn-secondary" href="${m.apostila_url}" target="_blank" rel="noopener" style="text-decoration:none;font-size:12px;padding:7px 10px">📘 Apostila (PDF)</a>`:"";
+      const planoLink=m.plano_url?`<button class="btn-secondary" style="font-size:12px;padding:7px 10px" onclick='openPreview(${JSON.stringify(m.plano_url)}, ${JSON.stringify(m.title||m.student)}, "docx")'>📄 Ver plano (Word)</button>`:"";
+      const apostilaLink=m.apostila_url?`<button class="btn-secondary" style="font-size:12px;padding:7px 10px" onclick='openPreview(${JSON.stringify(m.apostila_url)}, ${JSON.stringify(m.title||m.student)}, "pdf")'>📘 Ver apostila (PDF)</button>`:"";
       return `
         <div class="material-item">
           <div>
@@ -1233,7 +1300,13 @@ function renderMaterials(){
           </div>
           <div class="material-actions">
             ${planoLink}${apostilaLink}
-            <button class="btn-danger" style="font-size:12px;padding:7px 10px" onclick="deleteMaterial(${m.id})">🗑️</button>
+            <div class="mat-menu">
+              <button class="btn-secondary mat-menu-btn" style="font-size:12px;padding:7px 10px" onclick="toggleMatMenu(event, ${m.id})">⋮</button>
+              <div class="mat-menu-popup hidden" id="matMenu-${m.id}">
+                <button onclick="editMaterial(${m.id})">✏️ Editar</button>
+                <button onclick="deleteMaterial(${m.id})">🗑️ Excluir</button>
+              </div>
+            </div>
           </div>
         </div>`;
     }).join("");
@@ -1253,6 +1326,34 @@ async function deleteMaterial(id){
   const {error}=await supabaseClient.from("lesson_materials").delete().eq("id",id);
   if(error){alert("Erro ao excluir o registro: "+error.message);return}
   await loadMaterials();
+}
+
+async function openPreview(url, title, type){
+  const modal=document.getElementById("previewModal");
+  const body=document.getElementById("previewBody");
+  document.getElementById("previewTitle").textContent=title||"Documento";
+  modal.classList.remove("hidden");
+
+  if(type==="pdf"){
+    body.innerHTML=`<iframe src="${url}"></iframe>`;
+    return;
+  }
+
+  body.innerHTML='<div class="preview-loading">Convertendo documento...</div>';
+  try{
+    if(typeof mammoth==="undefined") throw new Error("Biblioteca de leitura de Word não carregou (verifique a internet).");
+    const resp=await fetch(url);
+    if(!resp.ok) throw new Error("Não foi possível baixar o arquivo.");
+    const arrayBuffer=await resp.arrayBuffer();
+    const result=await mammoth.convertToHtml({arrayBuffer});
+    body.innerHTML=`<div class="docx-preview">${result.value}</div>`;
+  }catch(err){
+    body.innerHTML=`<div class="preview-loading">Não foi possível abrir o documento aqui.<br><small>${escapeHTML(err.message)}</small><br><br><a href="${url}" target="_blank" rel="noopener">Baixar arquivo diretamente</a></div>`;
+  }
+}
+function closePreview(){
+  document.getElementById("previewModal").classList.add("hidden");
+  document.getElementById("previewBody").innerHTML="";
 }
 
 /* ================= MODO NOTURNO ================= */
