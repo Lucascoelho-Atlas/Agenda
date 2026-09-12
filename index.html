@@ -250,6 +250,7 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
 .question-block{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;background:var(--bg)}
 .question-block-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 .question-block-head select{width:auto;padding:6px 8px;font-size:12px}
+<<<<<<< HEAD
 .q-remove{background:none;border:none;color:var(--danger);font-size:14px;cursor:pointer;padding:4px 8px}
 .q-text{width:100%;min-height:50px;padding:9px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:13px;margin-bottom:8px;resize:vertical}
 .q-option-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
@@ -285,6 +286,16 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
 .student-tab-view.active{display:block}
 .student-main{max-width:560px;margin:0 auto;padding:20px 16px 60px}
 
+=======
+.q-remove{background:none;border:none;color:var(--red);font-size:14px;cursor:pointer;padding:4px 8px}
+.q-text{width:100%;min-height:50px;padding:9px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:inherit;font-size:13px;margin-bottom:8px;resize:vertical}
+.q-option-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.q-option-row input[type=text]{flex:1;padding:7px 9px;font-size:13px}
+.q-option-row button{background:none;border:none;color:var(--red);cursor:pointer;font-size:13px;padding:4px}
+.correction-question{border-bottom:1px solid var(--border);padding:16px 0}
+.correction-question:first-child{padding-top:0}
+
+>>>>>>> 609fe0893c423e9772463720c029b910a6858d60
 /* ============ Login ============ */
 #loginScreen{min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;box-shadow:var(--shadow)}
@@ -709,6 +720,70 @@ h1{font-size:24px;margin:5px 0 0}h2{font-size:28px;margin:5px 0 8px}h3{font-size
         </div>
       </div>
 
+      <!-- ===================== PÁGINA: ATIVIDADES ===================== -->
+      <div id="page-atividades" class="page-view">
+        <div class="main-grid">
+          <div class="card">
+            <h2 id="actFormTitle">Nova atividade</h2>
+            <div id="actFormMessage" class="success"></div>
+            <div class="form-group"><label>Título da atividade</label><input id="actTitle" type="text" placeholder="Ex.: Revisão Present Simple"></div>
+            <div class="form-group"><label>Aula(s) relacionada(s)</label><input id="actLessonRef" type="text" placeholder="Ex.: Lesson 04, Lesson 05"></div>
+
+            <label>Questões</label>
+            <div id="questionBuilder"></div>
+            <button type="button" class="btn-secondary" style="width:100%;margin-bottom:14px" onclick="addQuestionBlock()">+ Adicionar questão</button>
+
+            <div class="form-buttons">
+              <button class="btn-primary" id="actSaveBtn" onclick="saveActivity()">Salvar atividade</button>
+              <button id="actCancelEdit" class="btn-secondary hidden" onclick="cancelActivityEdit()">Cancelar</button>
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-top:10px">A atividade fica genérica aqui. Depois de salvar, use "👥 Alunos" na lista pra liberar pra quem você quiser, quando quiser.</p>
+          </div>
+
+          <div class="card">
+            <div class="section-title">
+              <h2>Atividades</h2>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <input id="actFilter" type="text" placeholder="Filtrar por título..." style="width:auto;min-width:160px" oninput="renderActivities()">
+                <button class="btn-secondary" onclick="loadActivities()">↻ Atualizar</button>
+              </div>
+            </div>
+            <div id="activitiesContainer"><div class="loading">Carregando atividades...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODAL: liberar atividade para alunos ===================== -->
+      <div id="assignModal" class="preview-modal hidden" onclick="if(event.target===this)closeAssignModal()">
+        <div class="preview-modal-inner" style="max-width:480px">
+          <div class="preview-modal-header">
+            <h3 id="assignTitle">Liberar atividade</h3>
+            <button onclick="closeAssignModal()">✕</button>
+          </div>
+          <div class="preview-body" style="padding:20px">
+            <div style="display:flex;gap:8px;align-items:flex-end">
+              <div style="flex:1">
+                <label>Adicionar aluno</label>
+                <input id="assignStudentInput" type="text" list="studentListDatalist" placeholder="Nome do aluno">
+              </div>
+              <button class="btn-primary" onclick="assignStudent()">Liberar</button>
+            </div>
+            <div id="assignList" style="margin-top:16px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== MODAL: corrigir atividade ===================== -->
+      <div id="correctionModal" class="preview-modal hidden" onclick="if(event.target===this)closeCorrection()">
+        <div class="preview-modal-inner">
+          <div class="preview-modal-header">
+            <h3 id="correctionTitle">Corrigir atividade</h3>
+            <button onclick="closeCorrection()">✕</button>
+          </div>
+          <div id="correctionBody" class="preview-body" style="padding:20px"></div>
+        </div>
+      </div>
+
       <!-- ===================== PÁGINA: FLASHCARDS ===================== -->
       <div id="page-flashcards" class="page-view">
         <div class="flash-grid">
@@ -870,7 +945,11 @@ const titles = {
   agenda: "Agenda",
   config: "Configurações"
 };
+<<<<<<< HEAD
 const REAL_PAGES = {inicio:"page-inicio", agenda:"page-agenda", flashcards:"page-flashcards", aulas:"page-aulas", atividades:"page-atividades", quizzes:"page-quizzes", config:"page-config"};
+=======
+const REAL_PAGES = {inicio:"page-inicio", agenda:"page-agenda", flashcards:"page-flashcards", aulas:"page-aulas", atividades:"page-atividades"};
+>>>>>>> 609fe0893c423e9772463720c029b910a6858d60
 
 function goToPage(page){
   document.querySelectorAll(".nav-item").forEach(x=>x.classList.toggle("active", x.dataset.page===page));
@@ -987,7 +1066,10 @@ async function showApp(){
   loadFlashcards();
   loadMaterials();
   loadActivities();
+<<<<<<< HEAD
   loadQuizzes();
+=======
+>>>>>>> 609fe0893c423e9772463720c029b910a6858d60
 }
 async function checkSession(){
   const {data}=await supabaseClient.auth.getSession();
@@ -2024,6 +2106,7 @@ function closeCorrection(){
   currentCorrectionQuestions=[];
 }
 
+<<<<<<< HEAD
 /* ================= QUIZZES (importar CSV + correção automática) ================= */
 let quizzes=[];
 let editingQuizId=null;
@@ -2579,6 +2662,8 @@ async function openStudentQuizResult(assignmentId){
   body.innerHTML=`<div style="text-align:center;padding:30px 10px"><div style="font-size:28px;font-weight:800">${data.score}/${data.total_questions}</div><div style="color:var(--muted);margin-top:6px">acertos</div></div>`;
 }
 
+=======
+>>>>>>> 609fe0893c423e9772463720c029b910a6858d60
 /* ================= MODO NOTURNO ================= */
 function toggleDarkMode(){
   document.body.classList.toggle("dark");
@@ -2593,6 +2678,7 @@ function loadDarkMode(){
   if(localStorage.getItem("atlas_dark_mode")==="1") document.body.classList.add("dark");
   updateDarkModeIcon();
 }
+<<<<<<< HEAD
 
 /* ================= TEMA DE COR ================= */
 function setAccentColor(color){
@@ -2683,6 +2769,8 @@ async function loadStudentProfiles(){
     </div>`).join("");
 }
 
+=======
+>>>>>>> 609fe0893c423e9772463720c029b910a6858d60
 resetActivityForm();
 loadDarkMode();
 loadAccentColor();
